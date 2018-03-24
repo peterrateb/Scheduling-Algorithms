@@ -1,0 +1,9 @@
+c:\users\peter\documents\visual studio 2012\Projects\ay7aga\ay7aga\bin\Debug\ay7aga.exe.config
+c:\users\peter\documents\visual studio 2012\Projects\ay7aga\ay7aga\bin\Debug\ay7aga.exe
+c:\users\peter\documents\visual studio 2012\Projects\ay7aga\ay7aga\bin\Debug\ay7aga.pdb
+c:\users\peter\documents\visual studio 2012\Projects\ay7aga\ay7aga\obj\Debug\ay7aga.csprojResolveAssemblyReference.cache
+c:\users\peter\documents\visual studio 2012\Projects\ay7aga\ay7aga\obj\Debug\ay7aga.Form1.resources
+c:\users\peter\documents\visual studio 2012\Projects\ay7aga\ay7aga\obj\Debug\ay7aga.Properties.Resources.resources
+c:\users\peter\documents\visual studio 2012\Projects\ay7aga\ay7aga\obj\Debug\ay7aga.csproj.GenerateResource.Cache
+c:\users\peter\documents\visual studio 2012\Projects\ay7aga\ay7aga\obj\Debug\ay7aga.exe
+c:\users\peter\documents\visual studio 2012\Projects\ay7aga\ay7aga\obj\Debug\ay7aga.pdb
