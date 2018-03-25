@@ -24,12 +24,6 @@ namespace algorithms
 			string[] lines = new string[n];
 			
 			merge.SortMerge(processes, 0, n - 1,sort.arrivalTime);
-			for (int i = 0; i < n; i++)
-			{
-				string line = processes[i].name + " " + processes[i].arrivalTime.ToString() + " " + processes[i].burstTime.ToString() + " " + processes[i].priority.ToString();
-
-				Console.WriteLine(line);
-			}
 			int arrivalneeded = processes[0].arrivalTime, served = 0, index = 0;
 			do
 			{
@@ -67,6 +61,7 @@ namespace algorithms
 								end = j;
 
 							merge.SortMerge(processes, start, end, sort.index);
+							break;
 						}
 					}
 				}
@@ -92,89 +87,6 @@ namespace algorithms
 		static public int RR(process[] processes, int n){
 			return 0;
 		}
-
-
-
-
-
-
-
-
-
-		/*
-
-			//Boolean cont = false; int start = 0, end = 0,arrivalTime = 0;
-			for (int i = 0; i < n; i++) {
-					if (i!=n-1&&processes[i].arrivalTime == processes[i+1].arrivalTime&&!cont) {
-						cont = true;
-						start = i;
-						arrivalTime = processes[i].arrivalTime;
-					}
-					else if (processes[i].arrivalTime == arrivalTime && cont)
-					{
-						end = i;
-					}
-					if (((processes[i].arrivalTime != arrivalTime) || (i == n - 1 && processes[i].arrivalTime == arrivalTime)) && cont)
-					{ 
-						i--;
-						if (i == n - 1)
-							end = i;
-						cont = false;
-						merge.SortMerge(processes, start, end, 1);
-
-						Boolean cont1 = false; int start1 = 0, end1 = 0,priority = 0;
-						for (int j = start; j <= end; j++)
-						{
-							if (j!=end&&processes[j].priority == processes[j + 1].priority && !cont1)
-							{
-								cont1 = true;
-								start1 = j;
-								priority = processes[j].priority;
-							}
-							else if (processes[j].priority == priority && cont1)
-							{
-								end1 = j;
-							}
-							if (((processes[j].priority != priority)||(processes[j].priority == priority&& j ==end)) && cont1)
-							{
-								j--;
-								if (j == end)
-									end1 = j;
-								cont1 = false;
-								merge.SortMerge(processes, start1, end1, 2);
-							}
-						}
-					}
-			}
-		/*int burst = 0, finish = 0;
-		for (int i = 0; i < n; i++)
-		{
-			if (processes[i].priority == processes[i + 1].priority && processes[i].arrivalTime == processes[i + 1].arrivalTime && !cont)
-			{
-				start = i;
-				cont = true;
-				priority = processes[i].priority;
-				arrivalTime = processes[i].arrivalTime;
-			}
-			else if (processes[i].priority == priority && processes[i].arrivalTime == arrivalTime && cont)
-			{
-				end = i;
-			}
-			else if (processes[i].priority != priority || processes[i].arrivalTime != arrivalTime && cont)
-			{
-				cont = false;
-				merge.SortMerge(processes, start, end, 2);
-			}
-		}*/
-		/*
-			processes[i].startTime = finish;
-			processes[i].waitingTime = processes[i].startTime - processes[i].arrivalTime;
-			processes[i].finishTime = processes[i].startTime + processes[i].burstTime;
-
-			//burst += processes[i].burstTime;
-			finish = processes[i].finishTime;*/
-
-
 
 	}
 }
