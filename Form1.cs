@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,27 +9,19 @@ using System.Text;
 using System.Windows.Forms;
 using MergeSort;
 using algorithms;
-struct process{
-	public string name;
-	public int arrivalTime;
-	public int burstTime;
-	public int priority;
-	public int startTime;
-	public int waitingTime;
-	public int finishTime;
-}
-
+using dataTypes;
 namespace WindowsFormsApp1
 {
-	
+
 	public partial class Form1 : Form
 	{
 		int algorithm = -1, n = -1;//for data validation
-		int check=0;
+		int check = 0;
 		TextBox[] arrivaltimes;
 		TextBox[] bursts;
 		TextBox[] priorities;
 		Label[] processesNames;
+		Label[] titles;
 		process[] processes;
 		public Form1()
 		{
@@ -44,7 +37,7 @@ namespace WindowsFormsApp1
 			Algorithm.Items.Add("Priority(P)");
 			Algorithm.Items.Add("Priority(NP)");
 			Algorithm.Items.Add("RR");
-		
+
 		}
 
 		private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -67,7 +60,9 @@ namespace WindowsFormsApp1
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			if (button1.Text == "Next")//first input
+			int nolines=0;
+			//first input
+			if (button1.Text == "Next")
 			{
 				algorithm = Algorithm.SelectedIndex;
 				//MessageBox.Show(algorithm.ToString());
@@ -76,7 +71,7 @@ namespace WindowsFormsApp1
 				//MessageBox.Show(var);
 
 				bool parsed = Int32.TryParse(var, out n);
-				if (!parsed||n<=0)
+				if (!parsed || n <= 0)
 				{
 					MessageBox.Show("number of processes must be integer larger than zero", "error");
 				}
@@ -88,31 +83,68 @@ namespace WindowsFormsApp1
 				}
 
 			}
-			else if (button1.Text == "execute")//second input
+			//second input
+			else if (button1.Text == "execute")
 			{
-				MessageBox.Show("execute");
-				if (validateData()) {
-				takeData();
-					merge.SortMerge(processes, 0, n - 1);
-					for (int i = 0; i < n; i++) {
-							string line = processes[i].name + " " + processes[i].arrivalTime.ToString() + " " + processes[i].burstTime.ToString() + " " + processes[i].priority.ToString();
-
-							Console.WriteLine(line); 
+				MessageBox.Show("execute"); 
+				if (validateData())
+				{
+					takeData();
+					switch (algorithm)
+					{
+						case 0:
+							nolines = schedulingAlgorithms.FCFS(processes, n);
+							break;
+						case 1:
+							nolines = schedulingAlgorithms.SJF_P(processes, n);
+							break;
+						case 2:
+							nolines = schedulingAlgorithms.SJF_NP(processes, n);
+							break;
+						case 3:
+							nolines = schedulingAlgorithms.priority_P(processes, n);
+							break;
+						case 4:
+							nolines = schedulingAlgorithms.priority_NP(processes, n);
+							break;
+						case 5:
+							nolines = schedulingAlgorithms.RR(processes, n);
+							break;
 					}
-					schedulingAlgorithms.FCFS(processes, n);
-					double waiting = 0;
+					/* clear the form */
 					for (int i = 0; i < n; i++)
 					{
-						waiting = processes[i].waitingTime;
+						this.Controls.Remove(arrivaltimes[i]);
+						this.Controls.Remove(bursts[i]);
+						if (algorithm == 3 || algorithm == 4)
+						{
+							this.Controls.Remove(priorities[i]);
+						}
+						this.Controls.Remove(processesNames[i]);
 					}
-					waiting /= n;
+					this.Controls.Remove(titles[0]);
+					this.Controls.Remove(titles[1]);
+					this.Controls.Remove(titles[2]);
+					this.Controls.Remove(button1);
+					/* show the output */
+					ganttDisplay(nolines);
+					
+					
+						/*for (int i = 0; i < n; i++)
+						{
+							string line = processes[i].name + " " + processes[i].arrivalTime.ToString() + " " + processes[i].burstTime.ToString() + " " + processes[i].priority.ToString();
+
+							Console.WriteLine(line);
+						}*/
+						
+
+					
 
 				}
 
 			}
-			
 		}
-
+		
 
 		private void displayTableOfProcesses()
 		{
@@ -122,7 +154,7 @@ namespace WindowsFormsApp1
 				//priority
 				no = 3;
 			}
-			Label[] titles = new Label[no];
+			 titles = new Label[no];
 			for (int i = 0; i < no; i++)
 			{
 				titles[i] = new Label();
@@ -136,7 +168,7 @@ namespace WindowsFormsApp1
 				}
 				else if (i == 1)
 				{
-					titles[i].Left =  180;
+					titles[i].Left = 180;
 					titles[i].Text = "Burst Time";
 				}
 				else if (i == 2)
@@ -160,7 +192,7 @@ namespace WindowsFormsApp1
 			//button1.Enabled = false;
 			arrivaltimes = new TextBox[n];
 			bursts = new TextBox[n];
-			priorities= new TextBox[n];
+			priorities = new TextBox[n];
 			processesNames = new Label[n];
 
 			for (int i = 0; i < n; i++)
@@ -200,18 +232,18 @@ namespace WindowsFormsApp1
 		}
 
 		private bool validateData() {
-			int x,y,z; bool parsed1, parsed2, parsed3,priority=false;
+			int x, y, z; bool parsed1, parsed2, parsed3, priority = false;
 			for (int i = 0; i < n; i++) {
-				 parsed1 = Int32.TryParse(arrivaltimes[i].Text, out x);
-				 parsed2 = Int32.TryParse(bursts[i].Text, out y);
-				 parsed3 = Int32.TryParse(priorities[i].Text, out z);
+				parsed1 = Int32.TryParse(arrivaltimes[i].Text, out x);
+				parsed2 = Int32.TryParse(bursts[i].Text, out y);
+				parsed3 = Int32.TryParse(priorities[i].Text, out z);
 				if (algorithm == 3 || algorithm == 4)
 				{
 					priority = true;
 				}
-					if (!parsed1 || !parsed2 || (!parsed3&& priority))
+				if (!parsed1 || !parsed2 || (!parsed3 && priority))
 				{
-					MessageBox.Show("All text boxes must filled with integers","error");
+					MessageBox.Show("All text boxes must filled with integers", "error");
 					return false;
 				}
 				else if (x < 0 || y < 0 || (z < 0 && priority))
@@ -223,9 +255,14 @@ namespace WindowsFormsApp1
 					MessageBox.Show("Burst time text boxes must be filled with integers larger than zero", "error");
 					return false;
 				}
-				
+
 			}
 			return true;
+		}
+
+		private void panel2_Paint(object sender, PaintEventArgs e)
+		{
+
 		}
 
 		private void takeData() {
@@ -234,6 +271,7 @@ namespace WindowsFormsApp1
 			for (int i = 0; i < n; i++) {
 				processes[i] = new process();
 				processes[i].name = processesNames[i].Text;
+				processes[i].index = i;
 				processes[i].arrivalTime = Int32.Parse(arrivaltimes[i].Text);
 				processes[i].burstTime = Int32.Parse(bursts[i].Text);
 				if (algorithm == 3 || algorithm == 4)
@@ -243,14 +281,65 @@ namespace WindowsFormsApp1
 				//System.IO.StreamWriter processinfo;
 				//using ( processinfo = new System.IO.StreamWriter(@"D:\Beshoy\engineer\projects\WriteLines2.txt"));
 				//{
-					/*string line = processes[i].name + " " + processes[i].arrivalTime.ToString() + " " + processes[i].burstTime.ToString() + " " + processes[i].priority.ToString();
-					
-					Console.WriteLine(line);*/
+				/*string line = processes[i].name + " " + processes[i].arrivalTime.ToString() + " " + processes[i].burstTime.ToString() + " " + processes[i].priority.ToString();
+
+				Console.WriteLine(line);*/
 				//}
 			}
 		}
 
-		
+		private void ganttDisplay(int processno)
+		{
+			string[] lines = File.ReadAllLines(@"ganttChart.txt");
+			string[] processname = new string[processno];
+			int[] processEndTime = new int[processno];
+			for (int i = 0; i < processno; i++)
+			{
+				string[] splitedtext = lines[i].Split(' ');
+				processname[i] = splitedtext[0];
+				processEndTime[i] = int.Parse(splitedtext[1]);
+
+			}
+			Label[] Rect = new Label[processno];
+			Label[] time = new Label[processno + 1];
+
+			int startpoint = 50;
+			int timesum = 0;
+			time[0] = new Label();
+			time[0].Location = new Point(startpoint - 5, 70); //startpoint here is the next start point
+			time[0].AutoSize = true;
+			time[0].BackColor = System.Drawing.Color.Transparent;
+			time[0].Text = "0";
+			time[0].TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.panel2.Visible = true;
+			panel2.Controls.Add(time[0]);
+			for (int i = 0; i < processno; i++)
+			{
+				Rect[i] = new Label();
+				Rect[i].Location = new Point(startpoint, 30);
+				Rect[i].Size = new System.Drawing.Size(processEndTime[i] - timesum, 40);
+				Rect[i].Text = processname[i];
+				Rect[i].BackColor = System.Drawing.Color.Maroon;
+				Rect[i].BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+				Rect[i].TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+				startpoint = processEndTime[i] + 50;
+				timesum = processEndTime[i];
+				time[i] = new Label();
+				time[i].Location = new Point(startpoint - 5, 70); //startpoint here is the next start point
+				time[i].AutoSize = true;
+				time[i].BackColor = System.Drawing.Color.Transparent;
+				time[i].Text = timesum.ToString();
+				time[i].TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+				panel2.Controls.Add(Rect[i]);
+				panel2.Controls.Add(time[i]);
+			}
+			this.Controls.Add(panel2);
+		}
+
+
 	}
-	
+
 }
+
+	
+

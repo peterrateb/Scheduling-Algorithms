@@ -2,23 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using dataTypes;
 namespace MergeSort
 {
 	class merge
 	{
-		public static void SortMerge(process[] input, int low, int high)
+		public static void SortMerge(process[] input, int low, int high,sort type)
 		{
 			if (low < high)
 			{
 				int middle = (low / 2) + (high / 2);
-				SortMerge(input, low, middle);
-				SortMerge(input, middle + 1, high);
-				Merge(input, low, middle, high);
+				SortMerge(input, low, middle,type);
+				SortMerge(input, middle + 1, high,type);
+				Merge(input, low, middle, high,type);
 			}
 		}
 
-		private static void Merge(process[] input, int low, int middle, int high)
+		private static void Merge(process[] input, int low, int middle, int high,sort type)
 		{
 
 			int left = low;
@@ -28,7 +28,17 @@ namespace MergeSort
 
 			while ((left <= middle) && (right <= high))
 			{
-				if (input[left].arrivalTime < input[right].arrivalTime)
+				if ((input[left].arrivalTime < input[right].arrivalTime) && type == sort.arrivalTime)
+				{
+					tmp[tmpIndex] = input[left];
+					left = left + 1;
+				}
+				else if ((input[left].priority < input[right].priority)&& type == sort.priority)
+				{
+					tmp[tmpIndex] = input[left];
+					left = left + 1;
+				}
+				else if ((input[left].index < input[right].index) && type == sort.index)
 				{
 					tmp[tmpIndex] = input[left];
 					left = left + 1;
