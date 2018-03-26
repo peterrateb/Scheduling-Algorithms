@@ -38,11 +38,6 @@ namespace MergeSort
 					tmp[tmpIndex] = input[left];
 					left = left + 1;
 				}
-				else if ((input[left].index < input[right].index) && type == sort.index)
-				{
-					tmp[tmpIndex] = input[left];
-					left = left + 1;
-				}
 				else
 				{
 					tmp[tmpIndex] = input[right];

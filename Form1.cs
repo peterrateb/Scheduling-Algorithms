@@ -90,6 +90,7 @@ namespace WindowsFormsApp1
 				if (validateData())
 				{
 					takeData();
+					Console.WriteLine(algorithm.ToString());
 					switch (algorithm)
 					{
 						case 0:
@@ -124,18 +125,23 @@ namespace WindowsFormsApp1
 					}
 					this.Controls.Remove(titles[0]);
 					this.Controls.Remove(titles[1]);
-					this.Controls.Remove(titles[2]);
+					if (algorithm == 3 || algorithm == 4)
+					{
+						this.Controls.Remove(titles[2]);
+					}
 					this.Controls.Remove(button1);
+
 					/* show the output */
+					//Console.WriteLine(nolines.ToString());
 					ganttDisplay(nolines);
 					
 					
-						/*for (int i = 0; i < n; i++)
+						for (int i = 0; i < n; i++)
 						{
 							string line = processes[i].name + " " + processes[i].arrivalTime.ToString() + " " + processes[i].burstTime.ToString() + " " + processes[i].priority.ToString();
 
 							Console.WriteLine(line);
-						}*/
+						}
 						
 
 					
@@ -232,27 +238,30 @@ namespace WindowsFormsApp1
 		}
 
 		private bool validateData() {
-			int x, y, z; bool parsed1, parsed2, parsed3, priority = false;
+			float x, y;int z; bool parsed1, parsed2, parsed3, priority = false;
 			for (int i = 0; i < n; i++) {
-				parsed1 = Int32.TryParse(arrivaltimes[i].Text, out x);
-				parsed2 = Int32.TryParse(bursts[i].Text, out y);
+				parsed1 = float.TryParse(arrivaltimes[i].Text, out x);
+				parsed2 = float.TryParse(bursts[i].Text, out y);
 				parsed3 = Int32.TryParse(priorities[i].Text, out z);
+				Console.WriteLine("p1="+parsed1.ToString()+" p2="+ parsed2+" p3="+ parsed3);
 				if (algorithm == 3 || algorithm == 4)
 				{
 					priority = true;
 				}
-				if (!parsed1 || !parsed2 || (!parsed3 && priority))
+				if (!parsed1 || x < 0)
 				{
-					MessageBox.Show("All text boxes must filled with integers", "error");
+					MessageBox.Show("All arrival time boxes must be filled with positive floats", "error");
 					return false;
 				}
-				else if (x < 0 || y < 0 || (z < 0 && priority))
+				else if (!parsed2 || y <= 0)
 				{
-					MessageBox.Show("All text boxes must be filled with positive integers", "error");
+					MessageBox.Show("All burst time boxes must be filled with floats higher than zero", "error");
 					return false;
 				}
-				else if (y == 0) {
-					MessageBox.Show("Burst time text boxes must be filled with integers larger than zero", "error");
+
+				else if (!parsed3 && priority && z < 0 )
+				{
+					MessageBox.Show("priority boxes must be filled with positive integers", "error");
 					return false;
 				}
 
@@ -271,20 +280,12 @@ namespace WindowsFormsApp1
 			for (int i = 0; i < n; i++) {
 				processes[i] = new process();
 				processes[i].name = processesNames[i].Text;
-				processes[i].index = i;
-				processes[i].arrivalTime = Int32.Parse(arrivaltimes[i].Text);
-				processes[i].burstTime = Int32.Parse(bursts[i].Text);
+				processes[i].arrivalTime = float.Parse(arrivaltimes[i].Text);
+				processes[i].burstTime = float.Parse(bursts[i].Text);
 				if (algorithm == 3 || algorithm == 4)
 				{
 					processes[i].priority = Int32.Parse(priorities[i].Text);
 				}
-				//System.IO.StreamWriter processinfo;
-				//using ( processinfo = new System.IO.StreamWriter(@"D:\Beshoy\engineer\projects\WriteLines2.txt"));
-				//{
-				/*string line = processes[i].name + " " + processes[i].arrivalTime.ToString() + " " + processes[i].burstTime.ToString() + " " + processes[i].priority.ToString();
-
-				Console.WriteLine(line);*/
-				//}
 			}
 		}
 
