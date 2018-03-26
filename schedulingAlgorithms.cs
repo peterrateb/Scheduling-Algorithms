@@ -24,7 +24,7 @@ namespace algorithms
 			string[] lines = new string[n];
 			
 			merge.SortMerge(processes, 0, n - 1,sort.arrivalTime);
-			int arrivalneeded = processes[0].arrivalTime, served = 0, index = 0;
+			float arrivalneeded = processes[0].arrivalTime;int served = 0, index = 0;
 			do
 			{
 				for (int i = n - 1; i >= 0; i--)
@@ -34,15 +34,7 @@ namespace algorithms
 						index = i; break;
 					}
 				}
-				Console.WriteLine("served= " + served.ToString() + " index= " + index.ToString());
 				merge.SortMerge(processes, served, index, sort.priority);
-				Console.WriteLine("////////////////");
-				for (int i = 0; i < n; i++)
-				{
-					string line = processes[i].name + " " + processes[i].arrivalTime.ToString() + " " + processes[i].burstTime.ToString() + " " + processes[i].priority.ToString();
-
-					Console.WriteLine(line);
-				}
 				if (served != n - 1 && processes[served].priority == processes[served + 1].priority)
 				{
 
@@ -60,7 +52,7 @@ namespace algorithms
 							if (j == index)
 								end = j;
 
-							merge.SortMerge(processes, start, end, sort.index);
+							merge.SortMerge(processes, start, end, sort.arrivalTime);
 							break;
 						}
 					}
@@ -72,12 +64,6 @@ namespace algorithms
 				served++;
 			} while (served < n);
 			File.WriteAllLines(@"ganttChart.txt", lines);
-
-			for (int i = 0; i < n; i++)
-			{
-				Console.WriteLine(lines[i]);
-			}
-
 
 			return n;
 		}
