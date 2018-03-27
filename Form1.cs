@@ -32,6 +32,8 @@ namespace WindowsFormsApp1
 		process[] processes;
 		float quantum;
 		ComboBox cont;
+		Label avgWaitingTime=new Label();
+
 		//Button OK;
 		
 		//Label a;
@@ -135,6 +137,7 @@ namespace WindowsFormsApp1
 			//first input
 			if (button1.Text == "Next")
 			{
+				Boolean _checked= true;
 				algorithm = Algorithm.SelectedIndex;
 				//MessageBox.Show(algorithm.ToString());
 				string var;
@@ -144,9 +147,20 @@ namespace WindowsFormsApp1
 				bool parsed = Int32.TryParse(var, out n);
 				if (!parsed || n <= 0)
 				{
+					_checked = false;
 					MessageBox.Show("number of processes must be integer larger than zero", "error");
+					
 				}
-				else
+				else if (algorithm == 5)
+				{
+					parsed = float.TryParse(QuantumTime.Text, out quantum);
+					if (!parsed || quantum <= 0)
+					{
+						_checked = false;
+						MessageBox.Show("Quantum Time must be postive number", "error");
+					}
+				}
+				if(_checked)
 				{
 					//MessageBox.Show("n=" + n.ToString());
 					this.AutoScroll = false;
@@ -156,14 +170,7 @@ namespace WindowsFormsApp1
 					this.AutoScroll = true;
 
 				}
-				if (algorithm == 5)
-				{
-					parsed = float.TryParse(QuantumTime.Text, out quantum);
-					if (!parsed || quantum <= 0)
-					{
-						MessageBox.Show("Quantum Time must be postive number", "error");
-					}
-				}
+				
 
 			}
 			//second input
@@ -173,7 +180,7 @@ namespace WindowsFormsApp1
 				if (validateData())
 				{
 					takeData();
-					//Console.WriteLine(algorithm.ToString());
+					//Console.WriteLine("hi");
 					switch (algorithm)
 					{
 						case 0:
@@ -197,14 +204,15 @@ namespace WindowsFormsApp1
 					}
 					
 					clearForm();
+					
 					/* show the output */
 					
 					ganttDisplay(nolines);
-
+					avgWaitingTimeDisplay();
 
 					for (int i = 0; i < n; i++)
 					{
-						string line = processes[i].name + " " + processes[i].arrivalTime.ToString() + " " + processes[i].burstTime.ToString() + " " + processes[i].priority.ToString();
+						string line = processes[i].name + " " + processes[i].finishTime.ToString() + " " + processes[i].arrivalTime.ToString() + " " + processes[i].burstTime.ToString();
 
 						Console.WriteLine(line);
 					}
@@ -213,7 +221,7 @@ namespace WindowsFormsApp1
 
 					//delete gantt chart
 
-
+					
 
 
 				}
@@ -236,6 +244,7 @@ namespace WindowsFormsApp1
 				{
 					button2.Visible = false;
 					comboBox1.Visible = false;
+					avgWaitingTime.Visible = false;
 				}
 				if (index == 0 || index == 1)
 				{
@@ -286,13 +295,15 @@ namespace WindowsFormsApp1
 			}
 			if (algorithm == 5)
 			{
-				this.Controls.Remove(titles[2]);
 				this.Controls.Remove(QuantumTime);
 			}
 			button1.Visible = false;
 			button1.Enabled = false;
 			Algorithm.Visible = false;
 			QuantumTime.Visible = false;
+			avgWaitingTime.Visible = false;
+			this.Controls.Remove(avgWaitingTime);
+
 		}
 
 		private void displayContForm()
@@ -485,11 +496,12 @@ namespace WindowsFormsApp1
 				Rect[i].BackColor = System.Drawing.Color.Goldenrod;
 				Rect[i].BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 				Rect[i].TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-				if (smallwidth)
+				/*if (smallwidth)
 				{
 					startpoint += 20;
 				}
-				else startpoint = processEndTime[i] + 50;
+				else startpoint = processEndTime[i] + 50;*/
+				startpoint += rectwidth;
 				timesum = processEndTime[i];
 				time[i] = new Label();
 				time[i].Location = new Point(startpoint - 5, 70); //startpoint here is the next start point
@@ -504,6 +516,21 @@ namespace WindowsFormsApp1
 			//this.Controls.Add(panel2);
 		}
 
+		private void avgWaitingTimeDisplay()
+		{
+			float totalwaitingtime = 0;
+			for (int i = 0; i < n; i++) {
+				processes[i].waitingTime = processes[i].finishTime - processes[i].arrivalTime - processes[i].burstTime;
+				totalwaitingtime += processes[i].waitingTime;
+			}
+			avgWaitingTime.Text = "Average waiting time = " + (totalwaitingtime/n).ToString();
+			avgWaitingTime.Left = 120;
+			avgWaitingTime.Top = 120;
+			avgWaitingTime.Width = 200;
+			avgWaitingTime.Visible = true;
+			this.Controls.Add(avgWaitingTime);
+
+		}
 
 		private bool validateData() {
 			float x, y;int z; bool parsed1, parsed2, parsed3, priority = false;
