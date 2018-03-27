@@ -34,8 +34,11 @@ namespace WindowsFormsApp1
 		ComboBox cont;
 		Label avgWaitingTime=new Label();
 
+		Label[] Rect;
+		Label[] time;
+		int nolines = 0;
 		//Button OK;
-		
+
 		//Label a;
 		public Form1()
 		{
@@ -133,7 +136,7 @@ namespace WindowsFormsApp1
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			int nolines = 0;
+			nolines = 0;
 			//first input
 			if (button1.Text == "Next")
 			{
@@ -176,11 +179,18 @@ namespace WindowsFormsApp1
 			//second input
 			else if (button1.Text == "execute")
 			{
-				//MessageBox.Show("execute"); 
+				algorithm = Algorithm.SelectedIndex;
+				if (algorithm == 5)
+				{
+					Boolean parsed = float.TryParse(QuantumTime.Text, out quantum);
+					if (!parsed || quantum <= 0)
+					{
+						MessageBox.Show("Quantum Time must be postive number", "error");
+					}
+				}
 				if (validateData())
 				{
 					takeData();
-					//Console.WriteLine("hi");
 					switch (algorithm)
 					{
 						case 0:
@@ -219,7 +229,7 @@ namespace WindowsFormsApp1
 
 					displayContForm();
 
-					//delete gantt chart
+					
 
 					
 
@@ -245,6 +255,8 @@ namespace WindowsFormsApp1
 					button2.Visible = false;
 					comboBox1.Visible = false;
 					avgWaitingTime.Visible = false;
+					deleteChart( nolines);
+					
 				}
 				if (index == 0 || index == 1)
 				{
@@ -252,6 +264,7 @@ namespace WindowsFormsApp1
 					Algorithm.Text = "Select the needing Schedule Algorithm";
 					QuantumTime.Visible = true;
 					QuantumTime.Enabled = false;
+					this.Controls.Add(QuantumTime);
 					QuantumTime.Text = "Quantum Time";
 					this.button1.Location = new System.Drawing.Point(113, 169);
 					this.button1.Size = new System.Drawing.Size(75, 23);
@@ -263,8 +276,8 @@ namespace WindowsFormsApp1
 					Algorithm.Visible = true;
 					Algorithm.Text = "Select the needing Schedule Algorithm";
 					button1.Text = "execute";
-
 				}
+
 				else if (index == 1)//home page
 				{
 					processNo.Visible = true;
@@ -328,7 +341,7 @@ namespace WindowsFormsApp1
 			int no = 2;
 			if (algorithm == 3 || algorithm == 4 )
 			{
-				//priority or RR
+				//priority
 				no = 3;
 			}
 			 titles = new Label[no];
@@ -355,12 +368,6 @@ namespace WindowsFormsApp1
 						titles[i].Left = 300;
 						titles[i].Text = "Priority No.";
 					}
-					/*else if (algorithm == 5)
-					{
-						titles[i].Top = n * 25 + 50;
-						titles[i].Left = 70;
-						titles[i].Text = "Quantum Time";
-					}*/
 				}
 				this.Controls.Add(titles[i]);
 			}
@@ -373,18 +380,7 @@ namespace WindowsFormsApp1
 			{
 				button1.Left = 170;
 			}
-		/*	if (algorithm == 5)
-			{
-				button1.Top = n * 25 + 80;
-				quantumTime = new TextBox();
-				quantumTime.Top = n * 25 +50;
-				quantumTime.Left = 150;
-				//quantumTime.Enabled = false;
-				//quantumTime.Width =80;
-				this.Controls.Add(quantumTime);
-			}*/
-			//this.Controls.Remove(Algorithm);
-			//this.Controls.Remove(processNo);
+
 			Algorithm.Visible = false;
 			processNo.Visible = false;
 			QuantumTime.Visible = false;
@@ -427,30 +423,6 @@ namespace WindowsFormsApp1
 				}
 				this.Controls.Add(processesNames[i]);
 			}
-			/*bool flag=false;
-			while (!flag)
-			{
-				flag = true;
-				for (int i = 0; i < n; i++)
-				{
-					if (String.IsNullOrWhiteSpace(arrivaltimes[i].Text) && String.IsNullOrEmpty(arrivaltimes[i].Text))
-					{
-						flag = false;
-					}
-					if (String.IsNullOrWhiteSpace(bursts[i].Text) && String.IsNullOrEmpty(bursts[i].Text))
-					{
-						flag = false;
-					}
-					if (algorithm == 3 || algorithm == 4)
-					{
-						if (String.IsNullOrWhiteSpace(priorities[i].Text) && String.IsNullOrEmpty(priorities[i].Text))
-						{
-							flag = false;
-						}
-					}
-				}
-			}
-			button1.Enabled = true;*/
 		}
 
 		private void ganttDisplay(int processno)
@@ -465,9 +437,8 @@ namespace WindowsFormsApp1
 				processEndTime[i] = int.Parse(splitedtext[1]);
 
 			}
-			Label[] Rect = new Label[processno];
-			Label[] time = new Label[processno + 1];
-
+			time = new Label[processno+1];
+			Rect = new Label[processno];
 			int startpoint = 50;
 			int timesum = 0;
 			time[0] = new Label();
@@ -477,7 +448,6 @@ namespace WindowsFormsApp1
 			time[0].Text = "0";
 			time[0].Font = new Font("Microsoft Sans Serif", 6);
 			time[0].TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			//this.panel2.Visible = true;
 			this.Controls.Add(time[0]);
 			for (int i = 0; i < processno; i++)
 			{
@@ -496,24 +466,29 @@ namespace WindowsFormsApp1
 				Rect[i].BackColor = System.Drawing.Color.Goldenrod;
 				Rect[i].BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 				Rect[i].TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-				/*if (smallwidth)
-				{
-					startpoint += 20;
-				}
-				else startpoint = processEndTime[i] + 50;*/
 				startpoint += rectwidth;
 				timesum = processEndTime[i];
-				time[i] = new Label();
-				time[i].Location = new Point(startpoint - 5, 70); //startpoint here is the next start point
-				time[i].AutoSize = true;
-				time[i].BackColor = System.Drawing.Color.Transparent;
-				time[i].Text = timesum.ToString();
-				time[i].Font = new Font("Microsoft Sans Serif", 6);
-				time[i].TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+				time[i + 1] = new Label();
+				time[i + 1].Location = new Point(startpoint - 5, 70); //startpoint here is the next start point
+				time[i + 1].AutoSize = true;
+				time[i + 1].BackColor = System.Drawing.Color.Transparent;
+				time[i + 1].Text = timesum.ToString();
+				time[i + 1].Font = new Font("Microsoft Sans Serif", 6);
+				time[i + 1].TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 				this.Controls.Add(Rect[i]);
-				this.Controls.Add(time[i]);
+				this.Controls.Add(time[i + 1]);
 			}
-			//this.Controls.Add(panel2);
+		}
+
+
+		private void deleteChart(int processno)
+		{
+			this.Controls.Remove(time[0]);
+			for (int i = 0; i < processno; i++)
+			{
+				this.Controls.Remove(Rect[i]);
+				this.Controls.Remove(time[i + 1]);
+			}
 		}
 
 		private void avgWaitingTimeDisplay()
@@ -567,7 +542,6 @@ namespace WindowsFormsApp1
 
 		private void takeData()
 		{
-			//MessageBox.Show(n.ToString());
 			processes = new process[n];
 
 			for (int i = 0; i < n; i++)

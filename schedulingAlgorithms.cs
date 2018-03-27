@@ -16,6 +16,7 @@ namespace algorithms
 			}
 			return priority_NP( processes, n);
 		}
+
 		static public int SJF_NP(process[] processes, int n){
 			for (int i = 0; i < n; i++)
 			{
@@ -23,9 +24,11 @@ namespace algorithms
 			}
 			return priority_NP(processes, n);
 		}
+
 		static public int SJF_P(process[] processes, int n){
 			return 0;
 		}
+
 		static public int priority_NP(process[] processes, int n)
 		{
 			int linesCount = 0;
@@ -85,13 +88,104 @@ namespace algorithms
 				file.WriteLine(processes[served].name + " " + (processes[served].finishTime).ToString());
 				linesCount++;
 				served++;
+				idle = true;
 			} while (served < n);
 			file.Close();
 			return linesCount;
 		}
-		static public int priority_P(process[] processes, int n){
-			return 0;
+
+		static public int priority_P(process[] processes, int n)
+		{
+			//string[] lines = new string[n];
+			StreamWriter file = new StreamWriter(@"ganttChart.txt", false);
+			file.Flush();
+			float time = 0;
+			int line_count = 0;
+			merge.SortMerge(processes, 0, n - 1, sort.priority);
+			merge.SortMerge(processes, 0, n - 1, sort.arrivalTime);
+			int served = 0;
+			bool burstflag;
+			float[] tempburst = new float[n];
+			for (int i = 0; i < n; i++)
+			{
+				tempburst[i] = processes[i].burstTime; //copy burst data
+			}
+			float arrivalneeded = processes[0].arrivalTime;
+			processes[0].startTime = processes[0].arrivalTime;
+			if (arrivalneeded != 0) //idle
+			{
+				time = processes[0].arrivalTime;
+				file.WriteLine("IDLE " + time);
+				line_count++;
+			}
+			bool idleflag;
+			do
+			{
+				idleflag = false;
+				burstflag = false;
+
+				for (int i = 0; i < n; i++)
+				{
+					if ((tempburst[served] + time) > processes[i].arrivalTime
+						&& processes[served].priority > processes[i].priority
+						&& tempburst[i] != 0)
+					{
+						//do preemptive periorty interrubt 
+						burstflag = true; idleflag = false;
+
+						if (time < processes[i].arrivalTime) //pass if the current process not excuted
+						{
+							tempburst[served] -= processes[i].arrivalTime - time;
+							time = processes[i].arrivalTime;
+							file.WriteLine(processes[served].name + " " + time);
+							line_count++;
+						}
+						served = i;
+						processes[served].startTime = time;
+						break;
+					}
+					else if ((tempburst[served] + time) >= processes[i].arrivalTime && tempburst[served] == 0 && tempburst[i] != 0)
+					{
+						//if process finished , take a not finished process
+						burstflag = true; idleflag = false;
+						served = i;
+						break;
+					}
+					else if (time < processes[i].arrivalTime && tempburst[i] != 0)
+					{
+						idleflag = true;
+					}
+				}
+
+				if (burstflag == false && tempburst[served] != 0) //if the process didn't interrupted and finished
+				{
+					burstflag = true;
+					time += tempburst[served];
+					tempburst[served] = 0;
+					processes[served].finishTime = time;
+					file.WriteLine(processes[served].name + " " + time);
+					line_count++;
+				}
+				//idle burst
+				if (idleflag && burstflag == false)
+				{
+					for (int i = 0; i < n; i++)
+					{
+						if (processes[i].arrivalTime > time && tempburst[i] != 0)
+						{
+							burstflag = true;
+							time = processes[i].arrivalTime;
+							file.WriteLine("IDLE " + time);
+							line_count++;
+							break;
+						}
+					}
+				}
+			} while (burstflag);
+			file.Close();
+			return line_count;
 		}
+
 		static public int RR(process[] processes, int n, float q)
 		{
 			merge.SortMerge(processes, 0, n - 1, sort.arrivalTime);
@@ -100,27 +194,48 @@ namespace algorithms
 			float time = 0;
 			int line_count = 0;
 			bool burstflag;
-			int finishflag = 0;
+			int finishflag = 0; //using to detect idle
+			float[] tempburst = new float[n];
+			for (int i = 0; i < n; i++)
+			{
+				tempburst[i] = processes[i].burstTime; //copy burst data
+			}
+			float arrivalneeded = processes[0].arrivalTime;
+			processes[0].startTime = processes[0].arrivalTime;
+			if (arrivalneeded != 0) //initial idle
+			{
+				time = processes[0].arrivalTime;
+				file.WriteLine("IDLE " + time);
+				line_count++;
+			}
 			do
 			{
-
 				burstflag = false;
 				for (int i = 0; i < n; i++)
 				{
-					if (processes[i].arrivalTime <= time && processes[i].burstTime != 0)
+					if (processes[i].arrivalTime <= time && tempburst[i] != 0)
 					{
 						burstflag = true;
-						if (processes[i].burstTime < q)
+						if (tempburst[i] == processes[i].burstTime) processes[i].startTime = time; //get start time
+						if (tempburst[i] < q)
 						{
-							time += processes[i].burstTime;
-							processes[i].burstTime = 0;
+							time += tempburst[i];
+							tempburst[i] = 0;
 						}
 						else
 						{
 							time += q;
-							processes[i].burstTime -= q;
+							tempburst[i] -= q;
 						}
-						if (processes[i].burstTime == 0 && finishflag != n - 1) finishflag++;
+						if (tempburst[i] == 0 && finishflag != n - 1)
+						{
+							processes[i].finishTime = time;
+							finishflag++;
+						}
+						else if (tempburst[i] == 0 && finishflag == n - 1)
+						{
+							processes[i].finishTime = time;
+						}
 						file.WriteLine(processes[i].name + " " + time);
 						line_count++;
 					}
@@ -130,6 +245,7 @@ namespace algorithms
 					burstflag = true;
 					time = processes[finishflag].arrivalTime;
 					file.WriteLine("IDLE " + time);
+					line_count++;
 				}
 			}
 			while (burstflag);
@@ -145,78 +261,7 @@ namespace algorithms
 
 
 
-		/*
-
-			//Boolean cont = false; int start = 0, end = 0,arrivalTime = 0;
-			for (int i = 0; i < n; i++) {
-					if (i!=n-1&&processes[i].arrivalTime == processes[i+1].arrivalTime&&!cont) {
-						cont = true;
-						start = i;
-						arrivalTime = processes[i].arrivalTime;
-					}
-					else if (processes[i].arrivalTime == arrivalTime && cont)
-					{
-						end = i;
-					}
-					if (((processes[i].arrivalTime != arrivalTime) || (i == n - 1 && processes[i].arrivalTime == arrivalTime)) && cont)
-					{ 
-						i--;
-						if (i == n - 1)
-							end = i;
-						cont = false;
-						merge.SortMerge(processes, start, end, 1);
-
-						Boolean cont1 = false; int start1 = 0, end1 = 0,priority = 0;
-						for (int j = start; j <= end; j++)
-						{
-							if (j!=end&&processes[j].priority == processes[j + 1].priority && !cont1)
-							{
-								cont1 = true;
-								start1 = j;
-								priority = processes[j].priority;
-							}
-							else if (processes[j].priority == priority && cont1)
-							{
-								end1 = j;
-							}
-							if (((processes[j].priority != priority)||(processes[j].priority == priority&& j ==end)) && cont1)
-							{
-								j--;
-								if (j == end)
-									end1 = j;
-								cont1 = false;
-								merge.SortMerge(processes, start1, end1, 2);
-							}
-						}
-					}
-			}
-		/*int burst = 0, finish = 0;
-		for (int i = 0; i < n; i++)
-		{
-			if (processes[i].priority == processes[i + 1].priority && processes[i].arrivalTime == processes[i + 1].arrivalTime && !cont)
-			{
-				start = i;
-				cont = true;
-				priority = processes[i].priority;
-				arrivalTime = processes[i].arrivalTime;
-			}
-			else if (processes[i].priority == priority && processes[i].arrivalTime == arrivalTime && cont)
-			{
-				end = i;
-			}
-			else if (processes[i].priority != priority || processes[i].arrivalTime != arrivalTime && cont)
-			{
-				cont = false;
-				merge.SortMerge(processes, start, end, 2);
-			}
-		}*/
-		/*
-			processes[i].startTime = finish;
-			processes[i].waitingTime = processes[i].startTime - processes[i].arrivalTime;
-			processes[i].finishTime = processes[i].startTime + processes[i].burstTime;
-
-			//burst += processes[i].burstTime;
-			finish = processes[i].finishTime;*/
+		
 
 
 
