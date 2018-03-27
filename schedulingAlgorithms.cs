@@ -1,4 +1,104 @@
-static public int priority_P(process[] processes, int n)
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using MergeSort;
+using dataTypes;
+namespace algorithms
+{
+    class schedulingAlgorithms
+    {
+
+        static public int FCFS(process[] processes, int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                processes[i].priority = processes[i].arrivalTime;
+            }
+            return priority_NP(processes, n);
+        }
+        static public int SJF_NP(process[] processes, int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                processes[i].priority = processes[i].burstTime;
+            }
+            return priority_NP(processes, n);
+        }
+        static public int SJF_P(process[] processes, int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                processes[i].priority = processes[i].burstTime;
+            }
+            return priority_P(processes, n);
+        }
+        static public int priority_NP(process[] processes, int n)
+        {
+            int linesCount = 0;
+            Boolean idle = true;
+            StreamWriter file = new StreamWriter(@"ganttChart.txt", false);
+            merge.SortMerge(processes, 0, n - 1, sort.arrivalTime);
+            float arrivalneeded = 0; int served = 0, index = 0;
+            do
+            {
+                for (int i = n - 1; i >= served; i--)
+                {
+                    if (processes[i].arrivalTime <= arrivalneeded)
+                    {
+                        idle = false;
+                        index = i; break;
+                    }
+                }
+                if (idle)
+                {
+                    for (int i = served; i < n; i++)
+                    {
+                        if (processes[i].arrivalTime > arrivalneeded)
+                        {
+                            file.WriteLine("IDLE " + processes[i].arrivalTime);
+                            linesCount++;
+                            arrivalneeded = processes[i].arrivalTime;
+                            index = i; break;
+                        }
+                    }
+
+                }
+                merge.SortMerge(processes, served, index, sort.priority);
+                if (served != n - 1 && processes[served].priority == processes[served + 1].priority)
+                {
+
+                    int start = served, end = 0; float priority = processes[served].priority;
+                    for (int j = served; j <= index; j++)
+                    {
+
+                        if (processes[j].priority == priority)
+                        {
+                            end = j;
+                        }
+                        if ((processes[j].priority != priority) || (processes[j].priority == priority && j == index))
+                        {
+                            j--;
+                            if (j == index)
+                                end = j;
+
+                            merge.SortMerge(processes, start, end, sort.arrivalTime);
+                            break;
+                        }
+                    }
+                }
+                processes[served].startTime = arrivalneeded;
+                arrivalneeded += processes[served].burstTime;
+                processes[served].finishTime = arrivalneeded;
+                file.WriteLine(processes[served].name + " " + (processes[served].finishTime).ToString());
+                linesCount++;
+                served++;
+            } while (served < n);
+            file.Close();
+            return linesCount;
+        }
+        static public int priority_P(process[] processes, int n)
         {
             //string[] lines = new string[n];
             StreamWriter file = new StreamWriter(@"ganttChart.txt", false);
@@ -48,7 +148,7 @@ static public int priority_P(process[] processes, int n)
                         processes[served].startTime=time;
                         break;
                     }
-                    else if ((tempburst[served] + time) > processes[i].arrivalTime && tempburst[served]==0 &&tempburst[i]!=0)
+                    else if ((tempburst[served] + time) >= processes[i].arrivalTime && tempburst[served]==0 &&tempburst[i]!=0)
                     {
                         //if process finished , take a not finished process
                         burstflag = true; idleflag=false;
