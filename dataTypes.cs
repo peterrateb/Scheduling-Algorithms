@@ -15,5 +15,6 @@ namespace dataTypes
 		public float waitingTime;
 		public float finishTime;
 	}
+	
 	enum sort { arrivalTime=0, priority=1 };
 }
