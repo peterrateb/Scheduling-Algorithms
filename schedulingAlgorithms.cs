@@ -25,9 +25,106 @@ namespace algorithms
 			return priority_NP(processes, n);
 		}
 
-		static public int SJF_P(process[] processes, int n){
-			return 0;
-		}
+static public int SJF_P(process[] processes, int n)
+        {
+            StreamWriter file = new StreamWriter(@"ganttChart.txt", false);
+            file.Flush();
+            float time = 0;
+            int line_count = 0;
+            for (int i = 0; i < n; i++)
+            {
+                processes[i].priority = processes[i].burstTime;
+            }
+            merge.SortMerge(processes, 0, n - 1, sort.priority);
+            merge.SortMerge(processes, 0, n - 1, sort.arrivalTime);
+            int served = 0;
+            bool burstflag;
+            float[] tempburst = new float[n];
+            for (int i = 0; i < n; i++)
+            {
+                tempburst[i] = processes[i].burstTime; //copy burst data
+            }
+            float arrivalneeded = processes[0].arrivalTime;
+            processes[0].startTime=processes[0].arrivalTime;
+            if(arrivalneeded!=0) //idle
+            {
+                time = processes[0].arrivalTime;
+                file.WriteLine("IDLE " + time);
+                line_count++;
+            }
+            bool idleflag;
+            do
+            {
+                idleflag = false;
+                burstflag = false;
+                
+                for (int i = 0; i < n; i++)
+                {
+                    if ((tempburst[served] + time) > processes[i].arrivalTime 
+                        && tempburst[served] > tempburst[i]
+                        && tempburst[i]!=0)
+                    {
+                        //do preemptive periorty interrubt 
+                        burstflag = true; idleflag=false;
+                        
+                        if (time < processes[i].arrivalTime) //pass if the current process not excuted
+                        {
+                            tempburst[served] -= processes[i].arrivalTime - time;
+                            time = processes[i].arrivalTime;
+                            file.WriteLine(processes[served].name + " " + time);
+                            line_count++;
+                        }
+                        served = i;
+                        processes[served].startTime=time;
+                        break;
+                    }
+                    else if ((tempburst[served] + time) >= processes[i].arrivalTime && tempburst[served]==0 &&tempburst[i]!=0)
+                    {
+                        //if process finished , take a not finished process
+                        burstflag = true; idleflag=false;
+                        served = i;
+                        break;
+                    }
+                    else if(time<processes[i].arrivalTime && tempburst[i]!=0)
+                    {
+                        idleflag = true;
+                    }
+                }
+
+                if (burstflag == false && tempburst[served]!=0) //if the process didn't interrupted and finished
+                {
+                        burstflag = true;
+                        time += tempburst[served];
+                        tempburst[served] = 0;
+                        processes[served].finishTime = time;
+                        file.WriteLine(processes[served].name + " " + time);
+                        line_count++;
+                }
+                //idle burst
+                if (idleflag && burstflag == false)
+                {
+                    for(int i=0 ; i<n ; i++)
+                    {
+                        if(processes[i].arrivalTime>time &&tempburst[i]!=0)
+                        {
+                            burstflag = true;
+                            time = processes[i].arrivalTime;
+                            file.WriteLine("IDLE " + time);
+                            line_count++;
+                            break;
+                        }
+                    }
+                }
+            } while (burstflag);
+            file.Close();
+            return line_count;
+        
+            /*for (int i = 0; i < n; i++)
+            {
+                processes[i].priority = processes[i].burstTime;
+            }
+            return priority_P(processes, n);*/
+        }
 
 		static public int priority_NP(process[] processes, int n)
 		{
