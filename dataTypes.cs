@@ -10,7 +10,7 @@ namespace dataTypes
 		public string name;
 		public float arrivalTime;
 		public float burstTime;
-		public int priority;
+		public float priority;
 		public float startTime;
 		public float waitingTime;
 		public float finishTime;
