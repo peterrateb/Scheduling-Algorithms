@@ -177,7 +177,7 @@ namespace WindowsFormsApp1
 
 			}
 			//second input
-			else if (button1.Text == "execute")
+			else if (button1.Text == "Execute")
 			{
 				algorithm = Algorithm.SelectedIndex;
 				if (algorithm == 5)
@@ -237,7 +237,37 @@ namespace WindowsFormsApp1
 				}
 
 			}
+			//reschedule
+			else if (button1.Text == "execute")
+			{
+				int prevalgorithm = algorithm;
+				algorithm = Algorithm.SelectedIndex;
+				MessageBox.Show(algorithm.ToString());
+				if (algorithm == 5)
+				{
+					Boolean parsed = float.TryParse(QuantumTime.Text, out quantum);
+					if (!parsed || quantum <= 0)
+					{
+						MessageBox.Show("Quantum Time must be postive number", "error");
+					}
+				}
+				
+				button1.Text = "Execute";
+				displayTableOfProcesses();
+				for (int i = 0; i < n; i++) {
+					arrivaltimes[i].Text = processes[i].arrivalTime.ToString();
+					bursts[i].Text = processes[i].burstTime.ToString();
+					if (prevalgorithm == 3 || prevalgorithm == 4 && (algorithm == 3 || algorithm == 4))
+					{
+						priorities[i].Text = processes[i].priority.ToString();
+					}
 
+				}
+				
+			
+				
+
+			}
 
 		}
 
@@ -374,7 +404,7 @@ namespace WindowsFormsApp1
 
 			button1.Top = n * 25 + 50;
 			button1.Left = 110;
-			button1.Text = "execute";
+			button1.Text = "Execute";
 			button1.Enabled = true;
 			if (algorithm == 3 || algorithm == 4)
 			{
@@ -529,7 +559,7 @@ namespace WindowsFormsApp1
 					return false;
 				}
 
-				if (!parsed3 && priority && z < 0 )
+				if ((!parsed3|| z < 0 )&& priority)
 				{
 					MessageBox.Show("priority boxes must be filled with positive integers", "error");
 					return false;
