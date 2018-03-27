@@ -33,13 +33,15 @@ namespace WindowsFormsApp1
 		float quantum;
 		ComboBox cont;
 		Label avgWaitingTime=new Label();
-
+		
+		/// <summary>
+		/// for ganttchart display
+		/// </summary>
 		Label[] Rect;
 		Label[] time;
 		int nolines = 0;
-		//Button OK;
+		
 
-		//Label a;
 		public Form1()
 		{
 			InitializeComponent();
@@ -242,7 +244,6 @@ namespace WindowsFormsApp1
 			{
 				int prevalgorithm = algorithm;
 				algorithm = Algorithm.SelectedIndex;
-				MessageBox.Show(algorithm.ToString());
 				if (algorithm == 5)
 				{
 					Boolean parsed = float.TryParse(QuantumTime.Text, out quantum);
@@ -253,6 +254,7 @@ namespace WindowsFormsApp1
 				}
 				
 				button1.Text = "Execute";
+				merge.SortMerge(processes, 0, n - 1, sort.index);
 				displayTableOfProcesses();
 				for (int i = 0; i < n; i++) {
 					arrivaltimes[i].Text = processes[i].arrivalTime.ToString();
@@ -580,6 +582,7 @@ namespace WindowsFormsApp1
 				processes[i].name = processesNames[i].Text;
 				processes[i].arrivalTime = float.Parse(arrivaltimes[i].Text);
 				processes[i].burstTime = float.Parse(bursts[i].Text);
+				processes[i].index = i;
 				if (algorithm == 3 || algorithm == 4)
 				{
 					processes[i].priority = Int32.Parse(priorities[i].Text);

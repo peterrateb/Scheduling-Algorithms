@@ -8,6 +8,7 @@ namespace dataTypes
 	struct process
 	{
 		public string name;
+		public int index;
 		public float arrivalTime;
 		public float burstTime;
 		public float priority;
@@ -15,6 +16,5 @@ namespace dataTypes
 		public float waitingTime;
 		public float finishTime;
 	}
-	
-	enum sort { arrivalTime=0, priority=1 };
+	enum sort { arrivalTime=0, priority=1 ,index=2 };
 }
