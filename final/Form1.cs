@@ -387,6 +387,7 @@ namespace SchedulingAlgorithmsProject
 			label2.Visible = true;
 			label2.Left = 50;
 			label2.Top = 130;
+			comboBox1.SelectedIndex = -1;
 			comboBox1.Visible = true;
 			comboBox1.AllowDrop = true;
 			comboBox1.FormattingEnabled = true;
