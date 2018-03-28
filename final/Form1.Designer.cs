@@ -34,17 +34,18 @@
 			this.QuantumTime = new System.Windows.Forms.TextBox();
 			this.comboBox1 = new System.Windows.Forms.ComboBox();
 			this.button2 = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// Algorithm
 			// 
 			this.Algorithm.AllowDrop = true;
-			this.Algorithm.FormattingEnabled = true;
-			this.Algorithm.Location = new System.Drawing.Point(38, 112);
+			this.Algorithm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.Algorithm.Location = new System.Drawing.Point(154, 112);
 			this.Algorithm.Name = "Algorithm";
-			this.Algorithm.Size = new System.Drawing.Size(219, 21);
+			this.Algorithm.Size = new System.Drawing.Size(82, 21);
 			this.Algorithm.TabIndex = 0;
-			this.Algorithm.Text = "Select the needing Schedule Algorithm";
 			this.Algorithm.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
 			// 
 			// processNo
@@ -80,6 +81,7 @@
 			// 
 			// comboBox1
 			// 
+			this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBox1.FormattingEnabled = true;
 			this.comboBox1.Location = new System.Drawing.Point(38, 203);
 			this.comboBox1.Name = "comboBox1";
@@ -99,12 +101,35 @@
 			this.button2.Visible = false;
 			this.button2.Click += new System.EventHandler(this.button2_Click);
 			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(51, 115);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(97, 13);
+			this.label1.TabIndex = 6;
+			this.label1.Text = "Select an algorithm";
+			this.label1.Click += new System.EventHandler(this.label1_Click);
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(22, 203);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(207, 13);
+			this.label2.TabIndex = 7;
+			this.label2.Text = "Select a choice to continue then press OK";
+			this.label2.Visible = false;
+			this.label2.Click += new System.EventHandler(this.label2_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScroll = true;
 			this.ClientSize = new System.Drawing.Size(284, 262);
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.comboBox1);
 			this.Controls.Add(this.QuantumTime);
@@ -127,6 +152,8 @@
 		private System.Windows.Forms.TextBox QuantumTime;
 		private System.Windows.Forms.ComboBox comboBox1;
 		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
 	}
 }
 

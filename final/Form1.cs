@@ -66,15 +66,14 @@ namespace SchedulingAlgorithmsProject
 
 		private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			check1++;
-			if (Algorithm.SelectedIndex != -1 && check1 >= 1 && check2 >= 1 && ((check3 >= 1 && algorithm == 5) || algorithm != 5))
+			if (Algorithm.SelectedIndex != -1 &&check2 >= 1 && ((check3 >= 1 && Algorithm.SelectedIndex == 5) || Algorithm.SelectedIndex != 5))
 			{
 				button1.Enabled = true;
 				check1 = 0; check2 = 0; check3 = 0;
 			}
 			else if (button1.Text == "execute")
 			{
-				if (Algorithm.SelectedIndex != -1 && check1 >= 1 )
+				if (Algorithm.SelectedIndex != -1)
 				{
 					if (Algorithm.SelectedIndex != 5)
 					{
@@ -114,9 +113,9 @@ namespace SchedulingAlgorithmsProject
 			{
 				check2++;
 			}
-			if (Algorithm.SelectedIndex != -1 && check1 >= 1 && check2 >= 1)
+			if (Algorithm.SelectedIndex != -1 && check2 >= 1)
 			{
-				if ((algorithm == 5 && QuantumTime.Text != "Quantum Time") || (!QuantumTime.Enabled))
+				if ((Algorithm.SelectedIndex == 5 && QuantumTime.Text != "Quantum Time") || (!QuantumTime.Enabled))
 				{
 					button1.Enabled = true;
 					check1 = 0; check2 = 0; check3 = 0;
@@ -129,14 +128,9 @@ namespace SchedulingAlgorithmsProject
 			check3++;
 			if (button1.Text == "Next")
 			{
-				if (Algorithm.SelectedIndex != -1 && check1 >= 1 && check2 >= 1 )
+				if (Algorithm.SelectedIndex != -1 &&check2 >= 1 )
 				{
-					if (algorithm != 5)
-					{
-						button1.Enabled = true;
-						check1 = 0; check2 = 0; check3 = 0;
-					}
-					if (algorithm == 5 && QuantumTime.Text != "Quantum Time")
+					if ((Algorithm.SelectedIndex == 5 && QuantumTime.Text != "Quantum Time") || (!QuantumTime.Enabled))
 					{
 						button1.Enabled = true;
 						check1 = 0; check2 = 0; check3 = 0;
@@ -145,14 +139,14 @@ namespace SchedulingAlgorithmsProject
 			}
 			else if (button1.Text == "execute")
 			{
-				if (Algorithm.SelectedIndex != -1 && check1 >= 1)
+				if (Algorithm.SelectedIndex != -1 )
 				{
 					if (algorithm != 5)
 					{
 						button1.Enabled = true;
 						check1 = 0; check2 = 0; check3 = 0;
 					}
-					if (algorithm == 5 && QuantumTime.Text != "Quantum Time")
+					if (Algorithm.SelectedIndex == 5 && QuantumTime.Text != "Quantum Time")
 					{
 						button1.Enabled = true;
 						check1 = 0; check2 = 0; check3 = 0;
@@ -195,6 +189,7 @@ namespace SchedulingAlgorithmsProject
 				{
 					
 					this.AutoScroll = false;
+					label1.Visible = false;
 					comboBox1.Visible = false;
 					button2.Visible = false;
 					displayTableOfProcesses();
@@ -311,6 +306,7 @@ namespace SchedulingAlgorithmsProject
 				}
 				else
 				{
+					label2.Visible = false;
 					button2.Visible = false;
 					comboBox1.Visible = false;
 					avgWaitingTime.Visible = false;
@@ -321,7 +317,9 @@ namespace SchedulingAlgorithmsProject
 				{
 					this.AutoScroll = false;
 					Algorithm.Visible = true;
-					Algorithm.Text = "Select the needing Schedule Algorithm";
+					label1.Visible = true;
+					Algorithm.SelectedIndex = -1;
+					//Algorithm.Text = "Select the needing Schedule Algorithm";
 					QuantumTime.Visible = true;
 					QuantumTime.Enabled = false;
 					this.Controls.Add(QuantumTime);
@@ -386,12 +384,14 @@ namespace SchedulingAlgorithmsProject
 			button2.Left = 140;
 			button2.Top = 180;
 			button2.Enabled = false;
-
+			label2.Visible = true;
+			label2.Left = 50;
+			label2.Top = 130;
 			comboBox1.Visible = true;
 			comboBox1.AllowDrop = true;
 			comboBox1.FormattingEnabled = true;
 			comboBox1.Location = new System.Drawing.Point(38, 150);
-			comboBox1.Size = new System.Drawing.Size(340, 21);
+			comboBox1.Size = new System.Drawing.Size(270, 21);
 			comboBox1.TabIndex = 0;
 			comboBox1.Text = "Select your choice to continue then press OK";
 		}
@@ -442,6 +442,7 @@ namespace SchedulingAlgorithmsProject
 			}
 
 			Algorithm.Visible = false;
+			label1.Visible = false;
 			processNo.Visible = false;
 			QuantumTime.Visible = false;
 
@@ -483,6 +484,21 @@ namespace SchedulingAlgorithmsProject
 				}
 				this.Controls.Add(processesNames[i]);
 			}
+		}
+
+		private void textBox1_TextChanged_2(object sender, EventArgs e)
+		{
+
+		}
+
+		private void label1_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void label2_Click(object sender, EventArgs e)
+		{
+
 		}
 
 		private float avgWaitingTimeDisplay()
