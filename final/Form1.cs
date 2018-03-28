@@ -128,7 +128,7 @@ namespace SchedulingAlgorithmsProject
 			check3++;
 			if (button1.Text == "Next")
 			{
-				if (Algorithm.SelectedIndex != -1 &&check2 >= 1 )
+				if (Algorithm.SelectedIndex != -1 && processNo.Text != "please write the number of processes")
 				{
 					if ((Algorithm.SelectedIndex == 5 && QuantumTime.Text != "Quantum Time") || (!QuantumTime.Enabled))
 					{
