@@ -76,12 +76,12 @@ namespace SchedulingAlgorithmsProject
 			{
 				if (Algorithm.SelectedIndex != -1 && check1 >= 1 )
 				{
-					if (algorithm != 5)
+					if (Algorithm.SelectedIndex != 5)
 					{
 						button1.Enabled = true;
 						check1 = 0; check2 = 0; check3 = 0;
 					}
-					if (algorithm == 5 && QuantumTime.Text != "Quantum Time") {
+					if (Algorithm.SelectedIndex == 5 && QuantumTime.Text != "Quantum Time") {
 						button1.Enabled = true;
 						check1 = 0; check2 = 0; check3 = 0;
 					}
@@ -89,6 +89,7 @@ namespace SchedulingAlgorithmsProject
 			}
 			if (Algorithm.SelectedIndex == 5)
 			{
+				button1.Enabled = false;
 				QuantumTime.Enabled = true;
 			}
 			else
