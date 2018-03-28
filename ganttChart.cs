@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace WindowsFormsApp1
 {
     public partial class ganttChart : Form
     {
-        int nolines ;
+        int nolines;
         //process[] processes;
         int n;
         int scale;
@@ -25,7 +25,7 @@ namespace WindowsFormsApp1
         Label[] Rect;
         Label[] time;
         Label avgWaitingTime = new Label();
-        public ganttChart(int no , float totalwaitingtime , int k )
+        public ganttChart(int no, float totalwaitingtime, int k)
         {
             InitializeComponent();
             n = k;
@@ -37,12 +37,12 @@ namespace WindowsFormsApp1
         private void ganttChart_Load(object sender, EventArgs e)
         {
             button1.Enabled = false;
-            scale= int.Parse(textBox1.Text);
-            ganttDisplay(nolines,waitingtime,n,scale);
-            
+            scale = int.Parse(textBox1.Text);
+            ganttDisplay(nolines, waitingtime, n, scale);
+
         }
 
-        private void ganttDisplay(int processno, float totalwaitingtime , int n, int s)
+        private void ganttDisplay(int processno, float totalwaitingtime, int n, int s)
         {
             string[] lines = File.ReadAllLines(@"ganttChart.txt");
             string[] processname = new string[processno];
@@ -63,12 +63,12 @@ namespace WindowsFormsApp1
             time[0].AutoSize = true;
             time[0].BackColor = System.Drawing.Color.Transparent;
             time[0].Text = "0";
-            time[0].Font = new Font("Microsoft Sans Serif", 6+s);
+            time[0].Font = new Font("Microsoft Sans Serif", 6+s/2);
             time[0].TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.Controls.Add(time[0]);
             for (int i = 0; i < processno; i++)
             {
-                float rectwidth = (processEndTime[i] - timesum)*s;
+                float rectwidth = (processEndTime[i] - timesum) * s;
                 bool smallwidth = false;
                 if (rectwidth < 20)
                 {
@@ -79,8 +79,8 @@ namespace WindowsFormsApp1
                 Rect[i].Location = new Point((int)startpoint, 30);
                 Rect[i].Size = new System.Drawing.Size((int)rectwidth, 40);
                 Rect[i].Text = processname[i];
-                Rect[i].Font = new Font("Microsoft Sans Serif", 6+s);
-                if (Rect[i].Text == "IDLE") Rect[i].BackColor = System.Drawing.Color.Maroon;
+                Rect[i].Font = new Font("Microsoft Sans Serif", 6 );
+                if (Rect[i].Text == "IDLE") Rect[i].BackColor = System.Drawing.Color.Red;
                 else Rect[i].BackColor = System.Drawing.Color.Goldenrod;
                 Rect[i].BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
                 Rect[i].TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -91,15 +91,16 @@ namespace WindowsFormsApp1
                 time[i + 1].AutoSize = true;
                 time[i + 1].BackColor = System.Drawing.Color.Transparent;
                 time[i + 1].Text = timesum.ToString();
-                time[i + 1].Font = new Font("Microsoft Sans Serif", 6+s);
+                time[i + 1].Font = new Font("Microsoft Sans Serif", 6+s/2) ;
                 time[i + 1].TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
                 this.Controls.Add(Rect[i]);
                 this.Controls.Add(time[i + 1]);
                 avgWaitingTime.Text = "Average waiting time = " + (totalwaitingtime / n).ToString();
-                avgWaitingTime.Font = new Font("Microsoft Sans Serif", 6 + s);
+                avgWaitingTime.Font = new Font("Microsoft Sans Serif", 10 );
                 avgWaitingTime.Left = 200;
-                avgWaitingTime.Top = 120;
-                avgWaitingTime.Width = 200;
+                avgWaitingTime.Top = 100;
+                //avgWaitingTime.Width = 200;
+                avgWaitingTime.AutoSize = true;
                 avgWaitingTime.Visible = true;
                 this.Controls.Add(avgWaitingTime);
             }
@@ -113,9 +114,9 @@ namespace WindowsFormsApp1
             {
                 MessageBox.Show("please Enter a positive integr value","Warning");
             }*/
-                deleteChart(nolines);
-                ganttDisplay(nolines, waitingtime, n, scale);
-            
+            deleteChart(nolines);
+            ganttDisplay(nolines, waitingtime, n, scale);
+
         }
 
         private void deleteChart(int processno)
@@ -132,7 +133,7 @@ namespace WindowsFormsApp1
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             int n;
-            if (int.TryParse(textBox1.Text ,out n ))
+            if (int.TryParse(textBox1.Text, out n))
             {
                 if (n < 1 || n > 10)
                 {
