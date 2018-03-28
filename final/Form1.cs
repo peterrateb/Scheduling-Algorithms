@@ -21,7 +21,7 @@ namespace SchedulingAlgorithmsProject
 		/// for data validation
 		/// </summary>
 		int algorithm = -1, n = -1;
-		int check1 = 0, check2 = 0, check3 = 0;
+		
 
 		/// <summary>
 		/// for data input interface
@@ -66,26 +66,6 @@ namespace SchedulingAlgorithmsProject
 
 		private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (Algorithm.SelectedIndex != -1 &&check2 >= 1 && ((check3 >= 1 && Algorithm.SelectedIndex == 5) || Algorithm.SelectedIndex != 5))
-			{
-				button1.Enabled = true;
-				check1 = 0; check2 = 0; check3 = 0;
-			}
-			else if (button1.Text == "execute")
-			{
-				if (Algorithm.SelectedIndex != -1)
-				{
-					if (Algorithm.SelectedIndex != 5)
-					{
-						button1.Enabled = true;
-						check1 = 0; check2 = 0; check3 = 0;
-					}
-					if (Algorithm.SelectedIndex == 5 && QuantumTime.Text != "Quantum Time") {
-						button1.Enabled = true;
-						check1 = 0; check2 = 0; check3 = 0;
-					}
-				}
-			}
 			if (Algorithm.SelectedIndex == 5)
 			{
 				button1.Enabled = false;
@@ -96,6 +76,24 @@ namespace SchedulingAlgorithmsProject
 				QuantumTime.Text = "Quantum Time";
 				QuantumTime.Enabled = false;
 			}
+			if (Algorithm.SelectedIndex != -1 && processNo.Text != "please write the number of processes" && ((Algorithm.SelectedIndex == 5 && QuantumTime.Text != "Quantum Time") || (!QuantumTime.Enabled)))
+			{
+				button1.Enabled = true;
+			}
+			else if (button1.Text == "execute")
+			{
+				if (Algorithm.SelectedIndex != -1)
+				{
+					if (Algorithm.SelectedIndex != 5)
+					{
+						button1.Enabled = true;
+					}
+					if (Algorithm.SelectedIndex == 5 && QuantumTime.Text != "Quantum Time") {
+						button1.Enabled = true;
+					}
+				}
+			}
+			
 		}
 
 		private void comboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
@@ -109,23 +107,17 @@ namespace SchedulingAlgorithmsProject
 
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
-			if (processNo.Text != "please write the number of processes")
-			{
-				check2++;
-			}
-			if (Algorithm.SelectedIndex != -1 && check2 >= 1)
+			if (Algorithm.SelectedIndex != -1 && processNo.Text != "please write the number of processes")
 			{
 				if ((Algorithm.SelectedIndex == 5 && QuantumTime.Text != "Quantum Time") || (!QuantumTime.Enabled))
 				{
 					button1.Enabled = true;
-					check1 = 0; check2 = 0; check3 = 0;
 				}
 			}
 		}
 
 		private void textBox1_TextChanged_1(object sender, EventArgs e)
 		{
-			check3++;
 			if (button1.Text == "Next")
 			{
 				if (Algorithm.SelectedIndex != -1 && processNo.Text != "please write the number of processes")
@@ -133,7 +125,6 @@ namespace SchedulingAlgorithmsProject
 					if ((Algorithm.SelectedIndex == 5 && QuantumTime.Text != "Quantum Time") || (!QuantumTime.Enabled))
 					{
 						button1.Enabled = true;
-						check1 = 0; check2 = 0; check3 = 0;
 					}
 				}
 			}
@@ -144,12 +135,10 @@ namespace SchedulingAlgorithmsProject
 					if (algorithm != 5)
 					{
 						button1.Enabled = true;
-						check1 = 0; check2 = 0; check3 = 0;
 					}
 					if (Algorithm.SelectedIndex == 5 && QuantumTime.Text != "Quantum Time")
 					{
 						button1.Enabled = true;
-						check1 = 0; check2 = 0; check3 = 0;
 					}
 				}
 			}
