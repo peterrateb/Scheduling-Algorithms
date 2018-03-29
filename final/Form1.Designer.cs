@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.Algorithm = new System.Windows.Forms.ComboBox();
 			this.processNo = new System.Windows.Forms.TextBox();
 			this.button1 = new System.Windows.Forms.Button();
@@ -136,6 +137,7 @@
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.processNo);
 			this.Controls.Add(this.Algorithm);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Form1";
 			this.Text = "Scheduling Algorithms";
 			this.Load += new System.EventHandler(this.Form1_Load);
